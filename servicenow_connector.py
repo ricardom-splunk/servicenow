@@ -66,6 +66,7 @@ class ServicenowConnector(BaseConnector):
     ACTION_ID_GET_VARIABLES = "get_variables"
     ACTION_ID_ON_POLL = "on_poll"
     ACTION_ID_RUN_QUERY = "run_query"
+    ACTION_ID_GET_ATTACHMENTS = "get_attachments"
 
     def __init__(self):
 
@@ -1894,6 +1895,68 @@ class ServicenowConnector(BaseConnector):
 
         return RetVal(phantom.APP_SUCCESS, {})
 
+    def _get_attachments(self, param):
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        # Progress
+        self.save_progress(SERVICENOW_USING_BASE_URL, base_url=self._base_url)
+
+        # Connectivity
+        self.save_progress(phantom.APP_PROG_CONNECTING_TO_ELLIPSES, self._host)
+
+        # Extract input parameters
+        download_link = param.get("download_links")
+        file_name = param.get("files")
+        self.save_progress(f"Found attachment: {file_name} - {download_link}")
+
+        # import rpudb
+        # rpudb.set_trace(port=4444)
+
+        if all([download_link, file_name]):
+            ret_val, auth, headers = self._get_authorization_credentials(action_result)
+            if phantom.is_fail(ret_val):
+                return action_result.set_status(phantom.APP_ERROR, "Unable to get authorization credentials")
+
+            # Fetch file
+            r = requests.get(download_link, auth=auth, headers=headers)
+            file_path = "/tmp/" + file_name
+            file_binary_data = r.content
+            with open(file_path, 'wb') as output_file:
+                output_file.write(file_binary_data)
+
+            container = self.get_container_id()
+
+            # Create vault and add file to the vault
+            success, message, vault_id = phrules.vault_add(container=container, file_location=file_path, file_name=file_name)
+            cef_data = {
+                "description": "Artifact added by the get_attachment action.",
+                "vaultId": vault_id,
+                "fileName": file_name
+            }
+
+            # Add artifact
+            success, message, artifact_id = phrules.add_artifact(
+                container=container, cef_data=cef_data, name="Vault Artifact", label="artifact", severity="medium")
+
+        # try:
+        #     table_name = self._handle_py_ver_compat_for_input_str(param.get(SERVICENOW_JSON_TABLE, SERVICENOW_DEFAULT_TABLE))
+        #     ticket_id = self._handle_py_ver_compat_for_input_str(param[SERVICENOW_JSON_TICKET_ID])
+        #     is_sys_id = param.get("is_sys_id", False)
+        # except:
+        #     return action_result.set_status(phantom.APP_ERROR, "Please provide valid input parameters")
+
+        # ret_val = self._get_ticket_details(action_result, table_name, ticket_id, is_sys_id=is_sys_id)
+
+        # if phantom.is_fail(ret_val):
+        #     return action_result.get_status()
+
+        # try:
+        #     action_result.update_summary({SERVICENOW_JSON_GOT_TICKET_ID: action_result.get_data()[0]['sys_id']})
+        # except:
+        #     pass
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def handle_action(self, param):
         """Function that handles all the actions
 
@@ -1940,6 +2003,8 @@ class ServicenowConnector(BaseConnector):
             ret_val = self._test_connectivity(param)
         elif action == self.ACTION_ID_RUN_QUERY:
             ret_val = self._run_query(param)
+        elif action == self.ACTION_ID_GET_ATTACHMENTS:
+            ret_val == self._get_attachments(param)
         return ret_val
 
 

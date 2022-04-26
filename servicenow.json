@@ -9,7 +9,7 @@
     "license": "Copyright (c) 2016-2022 Splunk Inc.",
     "type": "ticketing",
     "main_module": "servicenow_connector.py",
-    "app_version": "2.2.2",
+    "app_version": "2.2.2-fdse",
     "fips_compliant": true,
     "min_phantom_version": "5.1.0",
     "python_version": "3",
@@ -11647,6 +11647,73 @@
                 }
             },
             "output": [],
+            "versions": "EQ(*)"
+        },
+        {
+            "action": "get attachments",
+            "description": "Download attachments from a ticket",
+            "type": "investigate",
+            "identifier": "get_attachments",
+            "verbose": "Download all the attachment(s) from a specific ticket to a vault. This action should <b>always</b> follow the get_ticket action and take <i>action_result.data.*.attachment_details</i> as input",
+            "read_only": true,
+            "parameters": {
+                "attachment_details":
+                {
+                    "description": "List of Attachments",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains":
+                    [],
+                    "value_list":
+                    [],
+                    "default": "[]",
+                    "order": 0,
+                    "name": "attachment_details"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.parameter.download_links",
+                    "data_type": "string",
+                    "contains":
+                    [],
+                    "column_name": "download_links",
+                    "column_order": 0
+                },
+                {
+                    "data_path": "action_result.parameter.file_names",
+                    "data_type": "string",
+                    "contains":
+                    [],
+                    "column_name": "file_names",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 2
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric"
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric"
+                }
+            ],
+            "render": {
+                "width": 12,
+                "height": 5,
+                "type": "table",
+                "title": "Get Ticket Info"
+            },
             "versions": "EQ(*)"
         }
     ],
