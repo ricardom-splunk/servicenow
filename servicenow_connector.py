@@ -1938,23 +1938,6 @@ class ServicenowConnector(BaseConnector):
             success, message, artifact_id = phrules.add_artifact(
                 container=container, cef_data=cef_data, name="Vault Artifact", label="artifact", severity="medium")
 
-        # try:
-        #     table_name = self._handle_py_ver_compat_for_input_str(param.get(SERVICENOW_JSON_TABLE, SERVICENOW_DEFAULT_TABLE))
-        #     ticket_id = self._handle_py_ver_compat_for_input_str(param[SERVICENOW_JSON_TICKET_ID])
-        #     is_sys_id = param.get("is_sys_id", False)
-        # except:
-        #     return action_result.set_status(phantom.APP_ERROR, "Please provide valid input parameters")
-
-        # ret_val = self._get_ticket_details(action_result, table_name, ticket_id, is_sys_id=is_sys_id)
-
-        # if phantom.is_fail(ret_val):
-        #     return action_result.get_status()
-
-        # try:
-        #     action_result.update_summary({SERVICENOW_JSON_GOT_TICKET_ID: action_result.get_data()[0]['sys_id']})
-        # except:
-        #     pass
-
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def handle_action(self, param):
