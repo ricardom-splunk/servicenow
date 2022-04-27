@@ -11663,8 +11663,6 @@
                     "data_type": "string",
                     "required": false,
                     "primary": true,
-                    "contains":
-                    [],
                     "value_list":
                     [],
                     "default": "[]",
@@ -11674,38 +11672,34 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.parameter.download_links",
+                    "data_path": "action_result.parameter.attachment_details",
                     "data_type": "string",
-                    "contains":
-                    [],
-                    "column_name": "download_links",
+                    "column_name": "attachment_details",
                     "column_order": 0
-                },
-                {
-                    "data_path": "action_result.parameter.file_names",
-                    "data_type": "string",
-                    "contains":
-                    [],
-                    "column_name": "file_names",
-                    "column_order": 1
                 },
                 {
                     "data_path": "action_result.status",
                     "data_type": "string",
                     "column_name": "status",
+                    "column_order": 1
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string",
+                    "column_name": "status",
                     "column_order": 2
                 },
                 {
+                    "data_path": "action_result.data",
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 3
+                },
+                {
                     "data_path": "action_result.message",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "summary.total_objects",
-                    "data_type": "numeric"
-                },
-                {
-                    "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "string",
+                    "column_name": "status",
+                    "column_order": 4
                 }
             ],
             "render": {

@@ -1907,12 +1907,9 @@ class ServicenowConnector(BaseConnector):
         # Extract input parameters
         download_link = param.get("download_links")
         file_name = param.get("files")
-        self.save_progress(f"Found attachment: {file_name} - {download_link}")
-
-        # import rpudb
-        # rpudb.set_trace(port=4444)
 
         if all([download_link, file_name]):
+            self.save_progress(f"Found attachment: {file_name} - {download_link}")
             ret_val, auth, headers = self._get_authorization_credentials(action_result)
             if phantom.is_fail(ret_val):
                 return action_result.set_status(phantom.APP_ERROR, "Unable to get authorization credentials")
